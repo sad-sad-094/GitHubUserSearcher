@@ -6,6 +6,12 @@ E-mail: sadw621@gmail.com -->
   <div class='app'>
     <!-- Favorites -->
     <div class="favorites">
+      <!-- <div class="favorite" v-for="([, favorite], index) in favorites" :key="index"> --> <!-- ? Aquí desestructura el Map para obtener solo sus values -->
+      <div class="favorite" v-for="(favorite, index) in allFavorites" :key="index">
+        <a href="#">
+          <img :src="favorite.avatar_url" :alt="favorite.name" class="favorite__avatar">
+        </a>
+      </div>
     </div>
 
     <!-- Content -->
@@ -13,21 +19,87 @@ E-mail: sadw621@gmail.com -->
       <h1 class="content__title">Search GitHub Users</h1>
 
       <!-- Search -->
-      <form class="search">
-        <input type="text" class="search__input" required placeholder="Search GitHub users">
+      <form class="search" @submit.prevent="doSearch">
+        <input type="text" class="search__input" required placeholder="Search GitHub Users" v-model="user">
         <input type="submit" class="search__submit" value="Search">
       </form>
 
       <!-- Result -->
+      <div class="result" v-if="result">
+        <a v-if="isFavorite" href="#" class="result__toggle-favorite" @click="removeFavorite">Remove from favorites</a>
+        <a v-else href="#" class="result__toggle-favorite" @click="addFavorite">Add to favorites</a>
+        <h2 class="result_name">{{ userInfo.name }}</h2>
+        <img v-bind:src="userInfo.avatar_url" v-bind:alt="userInfo.name" class="result__avatar">
+        <p class="result__bio">
+          {{ userInfo.bio }}
+          <br>
+          <a :href="userInfo.blog" target="_blank" class="result__blog">{{ userInfo.blog }}</a>
+        </p>
+      </div>
       <!-- Error -->
-      <div class="result__error"></div>
+      <div class="result__error" v-if="error">Something went wrong: {{ error }}</div>
     </article>
   </div>
   <!-- <RouterView /> -->
 </template>
 
-<script setup>
-import { RouterView } from 'vue-router'
+<script>
+// import { RouterView } from 'vue-router';
+import axios from 'axios';
+
+import url from './assets/GitHubAPI';
+
+export default {
+  name: 'GitHubSearch',
+  data() {
+    return {
+      url: url,
+      user: '',
+      userInfo: {},
+      result: null,
+      error: null,
+      favorites: new Map(),
+    }
+  },
+  methods: {
+    async doSearch() {
+      this.result = this.error = null;
+      try {
+        const response = await axios.get(`${this.url}` + `${this.user}`);
+        this.userInfo = response.data;
+        this.result = true;
+        return () => {
+          console.log(response);
+        }
+      } catch (err) {
+        return this.error = err;
+      } finally {
+        return this.user = '';
+      }
+    },
+    addFavorite() {
+      this.favorites.set(this.userInfo.id, this.userInfo);
+      this.updateStorage();
+    },
+    removeFavorite() {
+      this.favorites.delete(this.userInfo.id);
+    },
+  },
+  computed: {
+    isFavorite() {
+      return this.favorites.has(this.userInfo.id);
+    },
+    allFavorites() {
+      return Array.from(this.favorites.values());
+    },
+    updateStorage() {
+      window.localStorage.setItem('favorites', JSON.stringify(this.allFavorites));
+    }
+  },
+  mounted() {
+
+  }
+}
 </script>
 
 <style scoped>
@@ -37,6 +109,7 @@ import { RouterView } from 'vue-router'
   justify-content: center;
   margin: auto;
 }
+
 /* Content */
 .content {
   background-color: #ffffff19;
