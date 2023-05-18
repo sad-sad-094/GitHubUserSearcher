@@ -8,7 +8,7 @@ E-mail: sadw621@gmail.com -->
     <div class="favorites">
       <!-- <div class="favorite" v-for="([, favorite], index) in favorites" :key="index"> --> <!-- ? Aquí desestructura el Map para obtener solo sus values -->
       <div class="favorite" v-for="(favorite, index) in allFavorites" :key="index">
-        <a href="#">
+        <a href="#" @click="() => showFavorite(favorite)">
           <img :src="favorite.avatar_url" :alt="favorite.name" class="favorite__avatar">
         </a>
       </div>
@@ -84,6 +84,9 @@ export default {
     removeFavorite() {
       this.favorites.delete(this.userInfo.id);
     },
+    showFavorite(favorite) {
+      this.userInfo = favorite;
+    }
   },
   computed: {
     isFavorite() {
@@ -98,6 +101,13 @@ export default {
   },
   mounted() {
 
+  },
+  created() {
+    const getFavs = JSON.parse(window.localStorage.getItem('favorites'));
+    if(getFavs?.length > 0) {
+      const favorites = new Map(getFavs.map(favorite => [favorite.id, favorite]));
+      this.favorites = favorites;
+    }
   }
 }
 </script>
