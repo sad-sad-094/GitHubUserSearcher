@@ -1,85 +1,174 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
+<!-- Author: Sebastian Aguirre Duque
+E-mail: sadw621@gmail.com -->
+
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+  <div class='app'>
+    <!-- Favorites -->
+    <div class="favorites">
     </div>
-  </header>
 
-  <RouterView />
+    <!-- Content -->
+    <article class="content">
+      <h1 class="content__title">Search GitHub Users</h1>
+
+      <!-- Search -->
+      <form class="search">
+        <input type="text" class="search__input" required placeholder="Search GitHub users">
+        <input type="submit" class="search__submit" value="Search">
+      </form>
+
+      <!-- Result -->
+      <!-- Error -->
+      <div class="result__error"></div>
+    </article>
+  </div>
+  <!-- <RouterView /> -->
 </template>
 
+<script setup>
+import { RouterView } from 'vue-router'
+</script>
+
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+.app {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
+/* Content */
+.content {
+  background-color: #ffffff19;
+  width: 768px;
+  max-width: 768px;
+  padding: 3rem;
+  border-radius: 1rem;
+  margin-left: auto;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
+.content__title {
+  margin: 1rem;
   text-align: center;
-  margin-top: 2rem;
+  color: black;
 }
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
+/* Search */
+.search {
+  display: flex;
+  margin-bottom: 2.5rem;
 }
 
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
+.search__input {
+  flex: 1;
+  padding: 1rem;
+  font-size: 1rem;
 }
 
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+/* Result */
+.result {
+  position: relative;
+  background-color: purple;
+  border-radius: 0.3rem;
+  box-shadow: 2px 2px 3px gray;
+  color: white;
+  padding: 2.5rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-areas:
+    "name name"
+    "avatar bio";
 }
 
-nav a:first-of-type {
-  border: 0;
+.result__toggle-favorite {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.3rem;
+  border: none;
+  color: white;
+  text-decoration: none;
+  padding: 0.4rem;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+.result__name {
+  grid-area: name;
+  margin: 0.4rem 0;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+.result__avatar {
+  grid-area: avatar;
+  max-width: 6rem;
+  height: auto;
+  border-radius: 1rem;
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.result__bio {
+  grid-area: bio;
+  margin: 0;
+}
 
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
+.result__blog {
+  grid-area: blog;
+  color: goldenrod;
+}
 
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.result__error {
+  padding: 0.3rem;
+  background-color: tomato;
+  color: white;
+  text-align: center;
+  border: 1px solid red;
+}
+
+/* Favorites */
+.favorites {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+}
+
+.favorite {
+  transition: transform 0.3s ease-out;
+}
+
+.favorite__avatar {
+  height: 5rem;
+  margin: 0.3rem;
+}
+
+.favorite--selected {
+  transform: scale(1.3);
+}
+
+/* Transitions */
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+
+.list-move,
+/* apply transition to moving elements */
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* ensure leaving items are taken out of layout flow so that moving
+   animations can be calculated correctly. */
+.list-leave-active {
+  position: absolute;
 }
 </style>
