@@ -4,15 +4,6 @@ E-mail: sadw621@gmail.com -->
 
 <template>
   <div class='app'>
-    <!-- Favorites -->
-    <div class="favorites">
-      <!-- <div class="favorite" v-for="([, favorite], index) in favorites" :key="index"> --> <!-- ? Aquí desestructura el Map para obtener solo sus values -->
-      <div class="favorite" v-for="(favorite, index) in allFavorites" :key="index">
-        <a href="#" @click="() => showFavorite(favorite)">
-          <img :src="favorite.avatar_url" :alt="favorite.name" class="favorite__avatar">
-        </a>
-      </div>
-    </div>
 
     <!-- Content -->
     <article class="content">
@@ -36,10 +27,24 @@ E-mail: sadw621@gmail.com -->
           <a :href="userInfo.blog" target="_blank" class="result__blog">{{ userInfo.blog }}</a>
         </p>
       </div>
+
       <!-- Error -->
       <div class="result__error" v-if="error">Something went wrong: {{ error }}</div>
     </article>
+
+    <!-- Favorites -->
+    <div class="favorites">
+      <!-- <div class="favorite" v-for="([, favorite], index) in favorites" :key="index"> -->
+      <!-- ? Aquí desestructura el Map para obtener solo sus values -->
+      <div class="favorite" v-for="(favorite, index) in allFavorites" :key="index">
+        <a href="#" @click="() => showFavorite(favorite)">
+          <img :src="favorite.avatar_url" :alt="favorite.name" class="favorite__avatar">
+        </a>
+      </div>
+    </div>
+
   </div>
+
   <!-- <RouterView /> -->
 </template>
 
@@ -104,7 +109,7 @@ export default {
   },
   created() {
     const getFavs = JSON.parse(window.localStorage.getItem('favorites'));
-    if(getFavs?.length > 0) {
+    if (getFavs?.length > 0) {
       const favorites = new Map(getFavs.map(favorite => [favorite.id, favorite]));
       this.favorites = favorites;
     }
@@ -115,25 +120,27 @@ export default {
 <style scoped>
 .app {
   display: flex;
+  flex-direction: column;
+  width: 80%;
   align-items: center;
   justify-content: center;
   margin: auto;
+  gap: 2.5rem;
 }
 
 /* Content */
 .content {
-  background-color: #ffffff19;
-  width: 768px;
-  max-width: 768px;
-  padding: 3rem;
+  background-color: #bc4ed8;
+  width: 70%;
+  padding: 1rem;
   border-radius: 1rem;
-  margin-left: auto;
+  margin-top: 2rem;
 }
 
 .content__title {
   margin: 1rem;
   text-align: center;
-  color: black;
+  color: #ffffff;
 }
 
 /* Search */
@@ -151,7 +158,7 @@ export default {
 /* Result */
 .result {
   position: relative;
-  background-color: purple;
+  background-color: #6b188a;
   border-radius: 0.3rem;
   box-shadow: 2px 2px 3px gray;
   color: white;
@@ -192,7 +199,7 @@ export default {
 
 .result__blog {
   grid-area: blog;
-  color: goldenrod;
+  color: #d8bc4e;
 }
 
 .result__error {
@@ -205,11 +212,11 @@ export default {
 
 /* Favorites */
 .favorites {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
+  width: 50%;
   display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+  flex-wrap: wrap;
 }
 
 .favorite {
@@ -219,6 +226,8 @@ export default {
 .favorite__avatar {
   height: 5rem;
   margin: 0.3rem;
+  border: 1px solid #ffffff;
+  border-radius: 10px;
 }
 
 .favorite--selected {
